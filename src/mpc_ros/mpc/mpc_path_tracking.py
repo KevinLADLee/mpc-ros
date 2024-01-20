@@ -33,20 +33,20 @@ class mpc_path_tracking:
 
     def controller(self, car_state, ref_path, iter_num=5, debug=False, **kwargs):
 
-        # car_state: x, y, theta, 3*1
+        # car_state: x, y, theta, np array 3*1
         # vel_list: a list of vel under preceding horizon
         # ref_path: waypoint list, waypoint: x, y, theta
         
         assert car_state.shape == (3, 1)
 
-        flag = False
-
+        is_arrived = False
+        
         # if self.cur_ind == 0:
         min_dis, self.cur_ind = self.closest_point(car_state, ref_path, self.cur_ind, **kwargs)
         
         if self.cur_ind == len(ref_path) - 1:
             self.ref_speed = 0
-            flag = True
+            is_arrived = True
             print('arrive at the goal')
 
         u_opt_array, state_pre, ref_traj = self.iterative_solver(car_state, ref_path, self.cur_vel_array, iter_num=iter_num, **kwargs)
@@ -61,7 +61,7 @@ class mpc_path_tracking:
             self.gear = 1
             self.speed_flag = -1
 
-        return u_opt_array[:, 0:1], state_pre, flag, ref_traj
+        return u_opt_array[:, 0:1], state_pre, is_arrived, ref_traj
 
     def linear_test(self, car_state, vel):
 

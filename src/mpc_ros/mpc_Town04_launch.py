@@ -4,4 +4,4 @@ from mpc_ros.mpc_Town04 import mpc_core
 
 if __name__ == '__main__':
     mp = mpc_core() 
-    mp.cal_vel()
+    rospy.spin()

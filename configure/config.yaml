@@ -1,5 +1,5 @@
 odom_topic: "/carla/ego_vehicle/odometry" # input topic
-ctl_topic: "/carla/ego_vehicle/vehicle_control_cmd" # output topic
+ctl_topic: "/carla/ego_vehicle/ackermann_cmd" # output topic
 receding: 10
 max_speed: 8
 ref_speed: 4

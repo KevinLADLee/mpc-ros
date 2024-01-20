@@ -13,7 +13,6 @@ class dubins_path:
         self.theta_trans = theta_trans  # trans the theta to -pi--pi
 
     def preprocess(self, start_point, goal_point):
-        
         assert start_point.shape == (3, 1) and goal_point.shape == (3, 1)
 
         dis, radian = self.relative(start_point[0:2], goal_point[0:2])

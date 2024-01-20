@@ -1,7 +1,6 @@
 from mpc_ros.utils.dubins_path import dubins_path
 import matplotlib.pyplot as plt
 import numpy as np
-from math import atan2
 
 class curve_generator:
     def __init__(self, point_list=[], select_mode='default', curve_style='line', point_style='state', min_radius=3, theta_trans=True):

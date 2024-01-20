@@ -1,7 +1,12 @@
 <launch>
     <rosparam file="$(find mpc_ros)/configure/config.yaml" command="load" />
-    <node pkg="mpc_ros" type="mpc_Town04_launch.py" name="mpc_Town04_launch"/>
+    <node pkg="mpc_ros" type="mpc_Town04_launch.py" name="mpc_Town04_launch" output="screen" />
+
+    <node pkg="mpc_ros" type="carla_map_visualization.py" name="carla_map_visualization" output="screen" />
 
     <include file="$(find carla_waypoint_publisher)/launch/carla_waypoint_publisher.launch" />
+
+    <!-- Start rviz by default -->
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find mpc_ros)/rviz/mpc.rviz" />
 
 </launch>
