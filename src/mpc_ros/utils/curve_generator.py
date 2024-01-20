@@ -1,4 +1,4 @@
-from utils.dubins_path import dubins_path
+from mpc_ros.utils.dubins_path import dubins_path
 import matplotlib.pyplot as plt
 import numpy as np
 from math import atan2

@@ -1,0 +1,7 @@
+<launch>
+    <rosparam file="$(find mpc_ros)/configure/config.yaml" command="load" />
+    <node pkg="mpc_ros" type="mpc_Town04_launch.py" name="mpc_Town04_launch"/>
+
+    <include file="$(find carla_waypoint_publisher)/launch/carla_waypoint_publisher.launch" />
+
+</launch>

@@ -1,47 +1,35 @@
 #! /usr/bin/env python3
 
-from ast import Pass
 import rospy
 from geometry_msgs.msg import Twist, PoseStamped, Quaternion
 from carla_msgs.msg import CarlaEgoVehicleControl
 import numpy as np
 from collections import namedtuple
-from utils.curve_generator import curve_generator
+
 from nav_msgs.msg import Odometry, Path
 from math import atan2, sin, cos, pi
-from std_msgs.msg import Float64
-from gazebo_msgs.msg import ModelStates
-from visualization_msgs.msg import MarkerArray, Marker
-import time
-import carla
-import random
+from visualization_msgs.msg import MarkerArray
 import numpy as np
 import rospy
 from geometry_msgs.msg import Twist, PoseStamped
 from nav_msgs.msg import Odometry, Path 
 from collections import namedtuple
 from math import atan2
-from mpc.mpc_path_tracking import mpc_path_tracking
-import yaml
-import os
+
+from mpc_ros.mpc.mpc_path_tracking import mpc_path_tracking
+from mpc_ros.utils.curve_generator import curve_generator
 
 car = namedtuple('car', 'G g cone_type wheelbase abs_speed abs_steer abs_acce abs_acce_steer')
 obstacle = namedtuple('obstacle', 'A b cone_type ')
 scaling = 10
-BASE_DIR = os.path.abspath(os.path.join( os.path.dirname( __file__ ), '..' ))
-with open(f"{BASE_DIR}/src/config.yaml", 'r') as f:
-    try:
-        cfg = yaml.safe_load(f, Loader=yaml.FullLoader)
-    except:
-        cfg = yaml.safe_load(f)
 
-odom_topic= cfg["odom_topic"]
-ctl_topic= cfg["ctl_topic"]
 
 class mpc_core:
     def __init__(self):
         
         # ros parameter
+        odom_topic= rospy.get_param('odom_topic', '/carla/ego_vehicle/odometry')
+        ctl_topic= rospy.get_param('ctl_topic', '/carla/ego_vehicle/vehicle_control_cmd')
         receding = rospy.get_param('receding', 10)
         max_speed = rospy.get_param('max_speed', 8)
         ref_speed = rospy.get_param('ref_speed', 4)
@@ -105,7 +93,8 @@ class mpc_core:
         # rviz show marker of car
         self.pub_marker_car = rospy.Publisher('car_marker', MarkerArray, queue_size=10)
         # ros topic
-        rospy.Subscriber(odom_topic, Odometry, self.robot_state_callback)
+        self.sub_odom = rospy.Subscriber(odom_topic, Odometry, self.robot_state_callback)
+        self.sub_ref_path = rospy.Subscriber('/carla/{}/waypoints', Path, self.ref_path_callback)
         self.pub_vel = rospy.Publisher(ctl_topic, CarlaEgoVehicleControl, queue_size=10)
         self.pub_path = rospy.Publisher('dubin_path', Path, queue_size=10)
         self.pub_opt_path = rospy.Publisher('opt_path', Path, queue_size=10)
